@@ -1,0 +1,37 @@
+{
+  "name": "type_tetris",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@types/jest": "23.3.2",
+    "jest": "23.6.0",
+    "ts-jest": "23.10.3",
+    "ts-node": "7.0.1",
+    "tslint": "5.11.0",
+    "typescript": "3.1.1"
+  },
+  "scripts": {
+    "main": "ts-node src/main.ts",
+    "test": "jest",
+    "coverage": "jest --coverage"
+  },
+
+  "//": [
+    "下記を参照してJestをTypeScriptに対応",
+    "https://deltice.github.io/jest/docs/ja/getting-started.html"
+  ], 
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
+}

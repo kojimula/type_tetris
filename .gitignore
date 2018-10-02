@@ -1,0 +1,8 @@
+# Coverage directory used by tool of jest
+coverage/
+
+# Compiled sources directrory 
+build/
+
+# Dependency directories
+node_modules/
