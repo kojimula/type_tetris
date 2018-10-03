@@ -4,22 +4,27 @@
   "private": true,
   "devDependencies": {
     "@types/jest": "23.3.2",
+    "cpx": "^1.5.0",
     "jest": "23.6.0",
+    "node-sass": "4.9.3",
+    "opener": "^1.5.1",
     "ts-jest": "23.10.3",
     "ts-node": "7.0.1",
     "tslint": "5.11.0",
     "typescript": "3.1.1"
   },
   "scripts": {
-    "main": "ts-node src/main.ts",
-    "test": "jest",
-    "coverage": "jest --coverage"
+    "copy-html": "cpx src/*.html build/src",
+    "coverage": "jest --coverage",
+    "sass": "node-sass src/sass/style.scss build/src/css/style.css",
+    "sass-watch": "node-sass src/sass/style.scss build/src/css/style.css -w",
+    "start": "npm run copy-html & npm run sass & tsc && opener build/src/index.html",
+    "test": "jest"
   },
-
   "//": [
     "下記を参照してJestをTypeScriptに対応",
     "https://deltice.github.io/jest/docs/ja/getting-started.html"
-  ], 
+  ],
   "jest": {
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
