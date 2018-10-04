@@ -59,6 +59,19 @@ function newBlock() {
     currentY = 0;
 }
 
+// 操作ブロックを回す処理
+function rotate(currentBlock: number[][]) {
+    var rotatedBlock: number[][] = [];
+    for (var y = 0; y < 4; y++) {
+        rotatedBlock[y] = [];
+        for (var x = 0; x < 4; x++) {
+            rotatedBlock[y][x] = currentBlock[3 - x][y];
+        }
+    }
+    return rotatedBlock;
+}
+
+
 /// 画面レンダリング系処理
 /*
  現在の盤面の状態を描画する処理
@@ -112,6 +125,7 @@ document.body.onkeydown = function (e) {
         37: 'left',
         39: 'right',
         40: 'down',
+        38: 'rotate'
     };
 
     if (typeof keys[e.keyCode] != 'undefined') {
@@ -133,6 +147,10 @@ function keyPress(key: string) {
             break;
         case 'down':
             currentY++;  // 下に一つずらす
+            break;
+        case 'rotate':
+            // 操作ブロックを回転
+            currentBlock = rotate(currentBlock);
             break;
     }
 }
