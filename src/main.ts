@@ -2,6 +2,7 @@ var COLS = 10, ROWS = 20;   // 横10マス、縦20マス
 var board: number[][] = []; // 盤面情報
 var currentBlock: number[][];           // 操作中のブロックの状態
 var currentX: number, currentY: number; // 操作中のブロックの位置
+var interval: number;       // ゲームタイマーを保持する変数
 
 var BlockShapes: number[][] = [
     [1, 1, 1, 1],
@@ -32,6 +33,7 @@ for (var y = 0; y < ROWS; y++) {
 }
 
 newBlock();
+interval = setInterval(tick, 250);  // 250ミリ秒ごとに関数tickを呼び出す
 
 // ブロックのパターンをランダムに出力し、盤面の一番上へセット
 function newBlock() {
@@ -59,6 +61,20 @@ function newBlock() {
     currentY = 0;
 }
 
+// インターバルにより指定した時間が経過する毎に呼び出される
+function tick() {
+    // １つ下へ移動
+    if (valid(0, 1)) {
+        currentY++;
+    }
+    // もし着地していたら(１つ下にブロックがあったら)
+    else {
+        freezeBlock();
+        // 新しい操作ブロックをセット
+        newBlock();
+    }
+}
+
 // 指定された方向に、操作ブロックを動かせるかどうかチェックする
 function valid(offsetX: number = 0, offsetY: number = 0, newBlock: number[][] = currentBlock): boolean {
     var newX = currentX + offsetX;
@@ -79,6 +95,17 @@ function valid(offsetX: number = 0, offsetY: number = 0, newBlock: number[][] = 
         }
     }
     return true;
+}
+
+// 操作ブロックを盤面にセット
+function freezeBlock() {
+    for (var y = 0; y < 4; y++) {
+        for (var x = 0; x < 4; x++) {
+            if (currentBlock[y][x]) {
+                board[currentY + y][currentX + x] = currentBlock[y][x];
+            }
+        }
+    }
 }
 
 // 操作ブロックを回す処理
@@ -114,7 +141,12 @@ function render() {
     // 盤面を描画する
     for (var x = 0; x < COLS; x++) {
         for (var y = 0; y < ROWS; y++) {
-            ctx!.fillStyle = 'grey';
+            if (board[y][x]) {  // マスが空、つまり0ではなかったら
+                ctx!.fillStyle = BlockColors[board[y][x] - 1];  // マスの種類に合わせて塗りつぶす色を設定
+            }
+            else {
+                ctx!.fillStyle = 'grey';
+            }
             drawBlock(x, y);  // マスを描画
         }
     }
