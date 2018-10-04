@@ -3,6 +3,7 @@ var board: number[][] = []; // 盤面情報
 var currentBlock: number[][];           // 操作中のブロックの状態
 var currentX: number, currentY: number; // 操作中のブロックの位置
 var interval: number;       // ゲームタイマーを保持する変数
+var loseFlg: boolean;       // ゲームオーバーを管理するフラグ
 
 var BlockShapes: number[][] = [
     [1, 1, 1, 1],
@@ -24,16 +25,25 @@ var BlockColors: string[] = [
     'cyan', 'orange', 'blue', 'yellow', 'red', 'green', 'purple'
 ];
 
-// 盤面を空にする
-for (var y = 0; y < ROWS; y++) {
-    board[y] = [];
-    for (var x = 0; x < COLS; x++) {
-        board[y][x] = 0;
-    }
+newGame();
+
+function newGame() {
+    clearInterval(interval);  // ゲームタイマーをクリア
+    init();
+    newBlock();
+    loseFlg = false;
+    interval = setInterval(tick, 250);  // 250ミリ秒ごとに関数tickを呼び出す
 }
 
-newBlock();
-interval = setInterval(tick, 250);  // 250ミリ秒ごとに関数tickを呼び出す
+// 盤面を空にする
+function init() {
+    for (var y = 0; y < ROWS; y++) {
+        board[y] = [];
+        for (var x = 0; x < COLS; x++) {
+            board[y][x] = 0;
+        }
+    }
+}
 
 // ブロックのパターンをランダムに出力し、盤面の一番上へセット
 function newBlock() {
@@ -70,12 +80,18 @@ function tick() {
     // もし着地していたら(１つ下にブロックがあったら)
     else {
         freezeBlock();
+        if (loseFlg) {
+            newGame();
+            return false;
+        }
+
         // 新しい操作ブロックをセット
         newBlock();
     }
 }
 
 // 指定された方向に、操作ブロックを動かせるかどうかチェックする
+// ゲームオーバー判定もここで行う
 function valid(offsetX: number = 0, offsetY: number = 0, newBlock: number[][] = currentBlock): boolean {
     var newX = currentX + offsetX;
     var newY = currentY + offsetY;
@@ -89,6 +105,12 @@ function valid(offsetX: number = 0, offsetY: number = 0, newBlock: number[][] = 
                     || x + newX < 0
                     || x + newX >= COLS
                     || y + newY >= ROWS) {
+                    if (currentY == 0
+                        && offsetX == 0
+                        && offsetY == 1) {
+                        console.log('ガメオベラ');
+                        loseFlg = true; // もし操作ブロックが盤面の上にあったら負けフラグを立てる
+                    }
                     return false;
                 }
             }
