@@ -59,6 +59,28 @@ function newBlock() {
     currentY = 0;
 }
 
+// 指定された方向に、操作ブロックを動かせるかどうかチェックする
+function valid(offsetX: number = 0, offsetY: number = 0, newBlock: number[][] = currentBlock): boolean {
+    var newX = currentX + offsetX;
+    var newY = currentY + offsetY;
+    for (var y = 0; y < 4; y++) {
+        for (var x = 0; x < 4; x++) {
+            // そのマスのブロックの有無を確認
+            if (newBlock[y][x]) {
+                if (typeof board[y + newY] == 'undefined'
+                    || typeof board[y + newY][x + newX] == 'undefined'
+                    || board[y + newY][x + newX]
+                    || x + newX < 0
+                    || x + newX >= COLS
+                    || y + newY >= ROWS) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
 // 操作ブロックを回す処理
 function rotate(currentBlock: number[][]) {
     var rotatedBlock: number[][] = [];
@@ -140,17 +162,26 @@ document.body.onkeydown = function (e) {
 function keyPress(key: string) {
     switch (key) {
         case 'left':
-            currentX--;  // 左に一つずらす
+            if (valid(-1)) {
+                currentX--;  // 左に一つずらす
+            }
             break;
         case 'right':
-            currentX++;  // 右に一つずらす
+            if (valid(1)) {
+                currentX++;  // 右に一つずらす
+            }
             break;
         case 'down':
-            currentY++;  // 下に一つずらす
+            if (valid(0, 1)) {
+                currentY++;  // 下に一つずらす
+            }
             break;
         case 'rotate':
             // 操作ブロックを回転
-            currentBlock = rotate(currentBlock);
+            var rotatedBlock = rotate(currentBlock);
+            if (valid(0, 0, rotatedBlock)) {
+                currentBlock = rotatedBlock;  // 回せる場合は回したあとの状態に操作ブロックをセット
+            }
             break;
     }
 }
