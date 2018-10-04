@@ -100,3 +100,39 @@ function drawBlock(x: number, y: number) {
     ctx!.fillRect(BLOCK_W * x, BLOCK_H * y, BLOCK_W - 1, BLOCK_H - 1);
     ctx!.strokeRect(BLOCK_W * x, BLOCK_H * y, BLOCK_W - 1, BLOCK_H - 1);
 }
+
+
+// 操作系処理
+/*
+ キーボードを入力した時に一番最初に呼び出される処理
+ */
+document.body.onkeydown = function (e) {
+    // キーに名前をセット
+    var keys: { [key: number]: string } = {
+        37: 'left',
+        39: 'right',
+        40: 'down',
+    };
+
+    if (typeof keys[e.keyCode] != 'undefined') {
+        // セットされたキーの場合
+        keyPress(keys[e.keyCode]);
+        // 描画処理を行う
+        render();
+    }
+};
+
+// キーボードが押された時に呼び出される関数
+function keyPress(key: string) {
+    switch (key) {
+        case 'left':
+            currentX--;  // 左に一つずらす
+            break;
+        case 'right':
+            currentX++;  // 右に一つずらす
+            break;
+        case 'down':
+            currentY++;  // 下に一つずらす
+            break;
+    }
+}
