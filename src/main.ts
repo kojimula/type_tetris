@@ -80,6 +80,7 @@ function tick() {
     // もし着地していたら(１つ下にブロックがあったら)
     else {
         freezeBlock();
+        clearLines();   // ライン消去処理
         if (loseFlg) {
             newGame();
             return false;
@@ -126,6 +127,30 @@ function freezeBlock() {
             if (currentBlock[y][x]) {
                 board[currentY + y][currentX + x] = currentBlock[y][x];
             }
+        }
+    }
+}
+
+// 底から順に一行が揃っているか調べ、揃っていたらその行を消去
+function clearLines() {
+    for (var y = ROWS - 1; y >= 0; y--) {
+        var rowFilled = true;
+        // 一行が揃っているか調べる
+        for (var x = 0; x < COLS; x++) {
+            if (board[y][x] == 0) {
+                rowFilled = false;
+                break;
+            }
+        }
+        // もし一行揃っていたら, その列を消去
+        if (rowFilled) {
+            // その上にあったブロックを一つずつ落としていく
+            for (var yy = y; yy > 0; yy--) {
+                for (var x = 0; x < COLS; x++) {
+                    board[yy][x] = board[yy - 1][x];
+                }
+            }
+            y++;  // 一行落としたのでチェック処理を一つ下へ送る
         }
     }
 }
